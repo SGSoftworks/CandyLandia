@@ -73,32 +73,55 @@ export const useCashControl = () => {
   const diferencia = state.efectivoFisico - efectivoEsperado - state.desembolsos;
 
   const generateWhatsAppMessage = () => {
-    const formatCurrency = (val: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val);
+    const formatCurrency = (val: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(val);
+    
+    let estadoFinal = '';
+    if (diferencia > 0) {
+      estadoFinal = `🟢 *SOBRANTE:* ${formatCurrency(Math.abs(diferencia))}`;
+      if (diferencia === totalBold && totalBold > 0) {
+        estadoFinal += '\n💡 _Nota: El sobrante es exactamente igual a los pagos BOLD. Verifica si anotaste un pago digital que al final cobraste en efectivo._';
+      }
+    } else if (diferencia < 0) {
+      estadoFinal = `🔴 *FALTANTE:* ${formatCurrency(Math.abs(diferencia))}`;
+      if (Math.abs(diferencia) === state.desembolsos && state.desembolsos > 0) {
+        estadoFinal += '\n💡 _Nota: El faltante es exactamente igual a los retiros. Recuerda que los desembolsos restan dinero físico._';
+      }
+    } else {
+      estadoFinal = `✅ *DINERO COMPLETO (Cuadrado a la perfección)*`;
+    }
 
     const message = `*Cierre de Caja - Candy Landia* 🍭🎡
-    
-*Desglose Fichas:*
-- Entregadas: ${state.fichasEntregadas}
-- Promos Vendidas: ${state.combo1Qty} (13x20k), ${state.combo2Qty} (25x40k), ${state.combo3Qty} (38x60k)
-- Fichas en Promos: ${fichasDeCombos}
-- Fichas Indiv: ${fichasIndividualesCount}
 
-*Ingresos:*
-- Venta Fichas Indiv: ${formatCurrency(ventaFichasIndividuales)}
-- Venta Promos: ${formatCurrency(ventaTotalPromos)}
-- *Venta Bruta Total: ${formatCurrency(ventaBrutaTotal)}*
+🎫 *INVENTARIO DE FICHAS*
+• Repartidas en total: ${state.fichasEntregadas}
+• Fichas en Promos: ${fichasDeCombos}
+• Fichas Individuales: ${fichasIndividualesCount}
+_(Promos vendidas: ${state.combo1Qty} C1, ${state.combo2Qty} C2, ${state.combo3Qty} C3)_
 
-*BOLD / Otros:*
-- Nequi: ${formatCurrency(state.nequi)}
-- Débito: ${formatCurrency(state.tarjetaDebito)}
-- Crédito: ${formatCurrency(state.tarjetaCredito)}
-- Total BOLD: ${formatCurrency(totalBold)}
-- Desembolsos: ${formatCurrency(state.desembolsos)}
+💰 *VENTAS DEL DÍA*
+• Por Individuales: ${formatCurrency(ventaFichasIndividuales)}
+• Por Promociones: ${formatCurrency(ventaTotalPromos)}
+👉 *Venta Bruta Total: ${formatCurrency(ventaBrutaTotal)}*
 
-*Arqueo Físico:*
-- Efectivo Físico: ${formatCurrency(state.efectivoFisico)}
-- Efectivo Esperado: ${formatCurrency(efectivoEsperado)}
-- *${diferencia > 0 ? 'Sobrante' : diferencia < 0 ? 'Faltante' : 'Dinero Completo'}: ${formatCurrency(Math.abs(diferencia))}* ${diferencia >= 0 ? '🟢' : '🔴'}`;
+💳 *MEDIOS DE PAGO (BOLD)*
+• Nequi: ${formatCurrency(state.nequi)}
+• Débito: ${formatCurrency(state.tarjetaDebito)}
+• Crédito: ${formatCurrency(state.tarjetaCredito)}
+👉 *Total BOLD: ${formatCurrency(totalBold)}*
+
+💸 *GASTOS / RETIROS*
+• Desembolsos: ${formatCurrency(state.desembolsos)}
+
+⚖️ *ARQUEO DE CAJA*
+• Ventas (Bruto): ${formatCurrency(ventaBrutaTotal)}
+• (-) Pagos BOLD: ${formatCurrency(totalBold)}
+==================
+• Efectivo Esperado: ${formatCurrency(efectivoEsperado)}
+• Efectivo Físico: ${formatCurrency(state.efectivoFisico)}
+• (-) Desembolsos: ${formatCurrency(state.desembolsos)}
+
+📊 *RESULTADO:*
+${estadoFinal}`;
 
     return encodeURIComponent(message);
   };

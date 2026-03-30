@@ -2,9 +2,31 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Candy Landia - Caja</title>
+    
+    <!-- Seguridad (Anti-inyección y Política estricta local) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws: wss:;" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="no-referrer" />
+
+    <!-- SEO Básico y Posicionamiento Global -->
+    <title>Candy Landia - Control de Caja</title>
+    <meta name="description" content="Sistema privado de arqueo de caja, cuadre y gestión de fichas para el parque Candy Landia." />
+    <meta name="keywords" content="Candy Landia, Family Park, control caja, PWA, turnos" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (WhatsApp, Facebook, LinkedIn, iMessage) -->
+    <meta property="og:title" content="Candy Landia - Arqueo de Caja" />
+    <meta property="og:description" content="Gestiona turnos, promociones vendidas y cuadre general del parque en tiempo real." />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Cards (X, Telegram, Discord) -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Candy Landia - Arqueo de Caja" />
+    <meta name="twitter:description" content="Gestiona turnos, promociones vendidas y cuadre general del parque en tiempo real." />
+    <meta name="twitter:image" content="/logo.png" />
   </head>
   <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>

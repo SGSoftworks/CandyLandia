@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCashControl } from './hooks/useCashControl';
-import { Calculator, Ticket, CreditCard, Banknote, RefreshCcw, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Ticket, CreditCard, Banknote, RefreshCcw, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const formatCurrency = (val: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(val);
 
@@ -27,6 +27,12 @@ const InputRow = ({ label, value, onChange, icon: Icon, prefix }: any) => (
 
 function App() {
   const { state, actions, calculated } = useCashControl();
+  const [showClearModal, setShowClearModal] = useState(false);
+
+  const handleClearConfirm = () => {
+    actions.resetForm();
+    setShowClearModal(false);
+  };
 
   const handleInputChange = (field: keyof typeof state) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // only allow digits
@@ -37,8 +43,8 @@ function App() {
     <div className="min-h-screen bg-slate-100 pb-24 font-sans text-slate-800 selection:bg-rose-200">
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-center gap-3">
-          <div className="bg-rose-100 p-2 rounded-full">
-            <Calculator className="w-6 h-6 text-rose-600" />
+          <div className="bg-rose-50 p-1 rounded-full overflow-hidden w-12 h-12 flex items-center justify-center border border-rose-100 shadow-sm shadow-rose-200/50">
+            <img src="/logo.png" alt="Candy Landia Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent">
             Candy Landia - Caja
@@ -144,7 +150,7 @@ function App() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-slate-200">
         <div className="max-w-md mx-auto flex gap-3">
           <button 
-            onClick={actions.resetForm}
+            onClick={() => setShowClearModal(true)}
             className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 transition-colors"
           >
             <RefreshCcw className="w-5 h-5" />
@@ -161,6 +167,36 @@ function App() {
           </a>
         </div>
       </div>
+
+      {/* Modal de Confirmación Limpiar */}
+      {showClearModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 text-center space-y-4">
+              <div className="mx-auto bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mb-2">
+                <AlertCircle className="w-8 h-8 text-rose-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800">¿Limpiar turno actual?</h3>
+              <p className="text-slate-500 text-sm">Estás a punto de borrar todos los datos ingresados. Esta acción no se puede deshacer de ninguna forma.</p>
+            </div>
+            <div className="p-4 bg-slate-50 flex gap-3 border-t border-slate-100">
+              <button 
+                onClick={() => setShowClearModal(false)}
+                className="flex-1 py-2.5 rounded-xl font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 active:bg-slate-100 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleClearConfirm}
+                className="flex-1 py-2.5 rounded-xl font-medium text-white bg-rose-500 hover:bg-rose-600 active:bg-rose-700 transition-colors shadow-sm"
+              >
+                Sí, limpiar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

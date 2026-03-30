@@ -39,6 +39,17 @@ export const useCashControl = () => {
 
   useEffect(() => {
     localStorage.setItem('candylandia-cash-control', JSON.stringify(state));
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const hasData = Object.values(state).some(val => val > 0);
+      if (hasData) {
+        e.preventDefault();
+        e.returnValue = ''; // Required for modern browsers to show the default reload warning
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [state]);
 
   const updateField = (field: keyof CashControlState, value: number) => {
@@ -46,9 +57,7 @@ export const useCashControl = () => {
   };
 
   const resetForm = () => {
-    if (window.confirm('¿Estás seguro de que quieres limpiar el formulario?')) {
-      setState(initialState);
-    }
+    setState(initialState);
   };
 
   // Derived Calculations
@@ -74,7 +83,7 @@ export const useCashControl = () => {
 
   const generateWhatsAppMessage = () => {
     const formatCurrency = (val: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(val);
-    
+
     let estadoFinal = '';
     if (diferencia > 0) {
       estadoFinal = `🟢 *SOBRANTE:* ${formatCurrency(Math.abs(diferencia))}`;
@@ -96,7 +105,7 @@ export const useCashControl = () => {
 • Repartidas en total: ${state.fichasEntregadas}
 • Fichas en Promos: ${fichasDeCombos}
 • Fichas Individuales: ${fichasIndividualesCount}
-_(Promos vendidas: ${state.combo1Qty} C1, ${state.combo2Qty} C2, ${state.combo3Qty} C3)_
+_(Promos vendidas: ${state.combo1Qty} (13x20k), ${state.combo2Qty} (25x40k), ${state.combo3Qty} (38x60k))_
 
 💰 *VENTAS DEL DÍA*
 • Por Individuales: ${formatCurrency(ventaFichasIndividuales)}

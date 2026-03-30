@@ -1,0 +1,6 @@
+<svg xmlns="http://www.द्योगिक.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <rect width="512" height="512" fill="#f43f5e" rx="100" />
+    <circle cx="256" cy="256" r="150" fill="#ffffff" />
+    <path d="M256 120 C 310 120 350 160 350 210 C 350 260 310 300 256 300 C 200 300 160 260 160 210 C 160 160 200 120 256 120 Z" fill="#f43f5e" />
+    <rect x="236" y="280" width="40" height="150" fill="#fcd34d" rx="10"/>
+</svg>
